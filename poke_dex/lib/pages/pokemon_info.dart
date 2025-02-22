@@ -10,6 +10,7 @@ class PokemonInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //backgroundColor: _corDependendoDoTipo(),
       appBar: AppBar(title: Text(result.name)),
       body: _buildPokeInfoBody(),
     );
@@ -36,85 +37,148 @@ class PokemonInfo extends StatelessWidget {
 
             var alturaEmCentimetros = lista.height * 10;
             var pesoEmQuilos = lista.weight / 10;
-            return Center(
-              child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/img.jpg"),
+                        fit: BoxFit.fitWidth),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Container(
                             padding: EdgeInsets.symmetric(
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(color: Colors.redAccent),
+                                vertical: 1, horizontal: 4),
+                            decoration: BoxDecoration(
+                                color: const Color.fromARGB(209, 255, 255, 255),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Text(lista.name,
+                                style: TextStyle(
+                                    fontSize: 27, fontWeight: FontWeight.bold)),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 4),
+                            decoration: BoxDecoration(
+                                color: const Color.fromARGB(209, 255, 255, 255),
+                                borderRadius: BorderRadius.circular(10)),
                             child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                for (var type in lista.types)
                                   Container(
-                                    margin: EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 15),
+                                    margin: EdgeInsets.symmetric(horizontal: 3),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 4, horizontal: 8),
                                     decoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey
-                                                .withValues(alpha: 0.7),
-                                            spreadRadius: 2,
-                                            blurRadius: 7,
-                                            offset: Offset(0,
-                                                3), // changes position of shadow
-                                          ),
-                                        ],
-                                        color: const Color.fromARGB(
-                                            76, 158, 158, 158),
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(5))),
-                                    child: Image.network(
-                                      lista.sprites['front_default'] ?? '',
-                                      height: 100,
-                                      width: 100,
-                                      scale: 0.5,
+                                            Radius.circular(16)),
+                                        color: _corDependendoDoTipo(
+                                            type.type["name"])),
+                                    child: Text(
+                                      type.type["name"],
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  ),
-                                  Column(children: [
-                                    Text('Name: ${lista.name}',
-                                        style: TextStyle(
-                                            fontSize: 27,
-                                            fontWeight: FontWeight.bold)),
-                                    SizedBox(height: 10),
-                                    Text('Height: $alturaEmCentimetros cm',
-                                        style: TextStyle(fontSize: 20)),
-                                    Text('Weight: $pesoEmQuilos Kg',
-                                        style: TextStyle(fontSize: 20)),
-                                  ])
-                                ]),
+                                  )
+                              ],
+                            ),
                           ),
-                          Text('Types: ',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              for (var type in lista.types)
-                                Text(
-                                  '${type.type["name"]} ',
-                                  style: TextStyle(fontSize: 25),
-                                )
-                            ],
+                        ],
+                      ),
+                      Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        child: Image.network(
+                          lista.sprites['front_default'] ?? '',
+                          height: 150,
+                          width: 150,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withValues(alpha: 0.7),
+                            spreadRadius: 5,
+                            blurRadius: 10,
+                            offset: Offset(0, 3), // changes position of shadow
                           ),
-                          Text('Abilities:',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
-                          for (var ability in lista.abilities)
-                            Text(ability.ability['name'],
-                                style: TextStyle(fontSize: 25))
                         ]),
-                  )),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text('Informações',
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.bold)),
+                            Text('Height: $alturaEmCentimetros cm',
+                                style: TextStyle(fontSize: 20)),
+                            Text('Weight: $pesoEmQuilos Kg',
+                                style: TextStyle(fontSize: 20)),
+                            Text('Abilities:',
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.bold)),
+                            for (var ability in lista.abilities)
+                              Text(ability.ability['name'],
+                                  style: TextStyle(fontSize: 25))
+                          ]),
+                    ),
+                  ),
+                ),
+              ],
             );
           }
-
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         });
+  }
+}
+
+Color _corDependendoDoTipo(String name) {
+  switch (name) {
+    case 'grass':
+      return const Color.fromARGB(255, 55, 212, 60);
+    case 'fire':
+      return const Color.fromARGB(255, 240, 73, 7);
+    case 'water':
+      return Colors.blue.shade100;
+    case 'electric':
+      return Colors.amber;
+    case 'poison':
+      return const Color.fromARGB(255, 175, 37, 202);
+    case 'bug':
+      return const Color.fromARGB(255, 138, 204, 63);
+    case 'flying':
+      return const Color.fromARGB(255, 129, 199, 231);
+    case 'normal':
+      return const Color.fromARGB(255, 201, 199, 199);
+    case 'fighting':
+      return const Color.fromARGB(255, 218, 6, 6);
+    case 'rock':
+      return const Color.fromARGB(255, 199, 99, 63);
+    case 'psychic':
+      return Colors.deepPurpleAccent.shade100;
+    case 'fairy':
+      return const Color.fromARGB(255, 214, 106, 182);
+    case 'ghost':
+      return const Color.fromARGB(255, 109, 16, 231);
+    default:
+      return Colors.grey;
   }
 }

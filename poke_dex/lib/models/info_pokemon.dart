@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:poke_dex/models/poke_abilities.dart';
 import 'package:poke_dex/models/poke_types.dart';
 
